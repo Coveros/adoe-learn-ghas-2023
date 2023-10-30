@@ -66,7 +66,8 @@ jobs:
       
       # Build CSharp Example
       # https://github.com/marketplace/actions/setup-net-core-sdk
-      # - name: Build CSharp-DotNet
+      # - if: matrix.language == 'csharp'
+      #   name: Build CSharp-DotNet
       #   uses: actions/setup-dotnet@v3
       #   with:
       #     dotnet-version: '3.1.x'
@@ -78,11 +79,12 @@ jobs:
     
       # Build Java
       # https://github.com/marketplace/actions/setup-java-jdk#Usage
-      - name: Build Java Version 'X' (See Doc for other details)
+      - if: matrix.language == 'java'
+        name: Build Java Version 'X' (See Doc for other details)
         uses: actions/setup-java@v3
         with:
-          distribution: 'zulu' # See 'Supported distributions' for available options
-          java-version: '17'
+          distribution: 'microsoft' # See 'Supported distributions' for available options
+          java-version: '16'
       # - run: java HelloWorldApp.java
       # End of Java Build Example 
 
@@ -99,3 +101,9 @@ jobs:
         uses: github/codeql-action/analyze@v2
         with:
           category: "/language:${{matrix.language}}"
+
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          # Path to SARIF file relative to the root of the repository
+          sarif_file: results.sarif
